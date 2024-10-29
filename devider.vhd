@@ -3,7 +3,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-
+entity divider is
+    Port (
+        CLK_in :  in  STD_LOGIC;
+        RST :     in  STD_LOGIC;
+        CLK_out : out  STD_LOGIC);
+end divider;
 
 architecture Behavioral of divider is
 begin
