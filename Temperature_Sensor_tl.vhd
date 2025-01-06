@@ -7,6 +7,7 @@ entity Temperature_Sensor_tl is
     Port (
         CLK100MHZ :  in  STD_LOGIC;
         RST :  in  STD_LOGIC;
+        SW: in std_logic;
         DIGITS: out std_logic_vector (7 downto 0);
         DP: out std_logic;
         CA: out std_logic;
@@ -21,7 +22,7 @@ end Temperature_Sensor_tl;
 
 architecture TempSensTL_arch of Temperature_Sensor_tl is
     signal CLK: std_logic;
-    signal F: std_logic := '0';
+    signal F: std_logic;
     signal temperatura: integer range 0 to 2000 := 366;
     signal th: integer range 0 to 10;
     signal rd: integer range 0 to 9;
@@ -39,7 +40,7 @@ architecture TempSensTL_arch of Temperature_Sensor_tl is
     component display_control is
     Port (
         CLK_in: in std_logic;
-        RST_in: in std_logic;
+        --RST_in: in std_logic;
         F_in: in std_logic;
         temperatura_in: in integer range 0 to 2000;
         th_out: out integer range 0 to 10;
@@ -69,6 +70,14 @@ architecture TempSensTL_arch of Temperature_Sensor_tl is
         CG_out: out std_logic
     );
     end component;
+
+    component switch is
+    Port (
+        CLK_in: in std_logic;
+        SW_in: in std_logic;
+        F_out: out std_logic
+    );
+    end component;
 begin
     divider_1: divider
     port map(
@@ -80,7 +89,7 @@ begin
     display_control_1: display_control
     port map(
         CLK_in => CLK,
-        RST_in => RST,
+        --RST_in => RST,
         F_in => F,
         temperatura_in => temperatura,
         th_out => th,
@@ -107,6 +116,13 @@ begin
         CE_out => CE,
         CF_out => CF,
         CG_out => CG
+    );
+
+    switch_1: switch
+    port map(
+        CLK_in => CLK,
+        SW_in => SW,
+        F_out => F
     );
 
 end TempSensTL_arch;
