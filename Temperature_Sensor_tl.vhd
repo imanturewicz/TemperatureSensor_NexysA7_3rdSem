@@ -30,7 +30,6 @@ architecture TempSensTL_arch of Temperature_Sensor_tl is
     signal rd: integer range 0 to 9;
     signal nd: integer range 0 to 9;
     signal st: integer range 0 to 9;
-    --signal i2c_ack_error : STD_LOGIC; -- I2C acknowledgment error flag
 
     component divider is
     Port (
@@ -43,7 +42,6 @@ architecture TempSensTL_arch of Temperature_Sensor_tl is
     component display_control is
     Port (
         CLK_in: in std_logic;
-        --RST_in: in std_logic;
         F_in: in std_logic;
         temperatura_in: in integer range 0 to 10000;
         th_out: out integer range 0 to 10;
@@ -127,13 +125,12 @@ begin
         F_out => F
     );
 
-    TEMP_SENSOR: entity work.temp_sensor
+    sensor_controller_1: entity work.sensor_controller
         port map (
             clk => CLK100MHZ,
             rst_n => '1', -- Active-low reset
             scl   => SCL,
             sda  => SDA,
-            --i2c_ack_err => i2c_ack_error,         --small change with Alvin's
             temp => temperatura
         );
 end TempSensTL_arch;

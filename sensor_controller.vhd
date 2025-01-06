@@ -2,7 +2,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;
 
-ENTITY temp_sensor IS
+ENTITY sensor_controller IS
   GENERIC(
     sys_clk_freq     : INTEGER := 50_000_000;                      -- System clock frequency in Hz
     temp_sensor_addr : STD_LOGIC_VECTOR(6 DOWNTO 0) := "1001011"  -- I2C address of the temperature sensor
@@ -12,12 +12,11 @@ ENTITY temp_sensor IS
     rst_n       : IN    STD_LOGIC;                                 -- Active-low reset
     scl         : INOUT STD_LOGIC;                                 -- I2C serial clock
     sda         : INOUT STD_LOGIC;                                 -- I2C serial data
-    --i2c_ack_err : OUT   STD_LOGIC;                                 -- I2C acknowledge error flag (small change with Alvin's)
-    temp        : OUT   integer range 0 to 10000                  -- Temperature value (small change with Alvin's)
+    temp        : OUT   integer range 0 to 10000                   -- Temperature value (small change with Alvin's)
   );
-END temp_sensor;
+END sensor_controller;
 
-ARCHITECTURE behavior OF temp_sensor IS
+ARCHITECTURE behavior OF sensor_controller IS
   -- Define the states of the state machine
   TYPE machine IS (startstate, setresolution, pausestate, read_data, output_result);
   SIGNAL state           : machine;                       -- State machine signal
@@ -31,7 +30,7 @@ ARCHITECTURE behavior OF temp_sensor IS
   SIGNAL tempdata        : STD_LOGIC_VECTOR(15 DOWNTO 0); -- Buffer for raw temperature data
   SIGNAL temperatureraw  : UNSIGNED(12 DOWNTO 0);         -- Raw temperature after processing
   SIGNAL temperaturescaled : UNSIGNED(15 DOWNTO 0);       -- Scaled temperature value
-  signal i2c_ack_err :    STD_LOGIC;   --small change with Alvin's
+  signal i2c_ack_err :    STD_LOGIC;                      -- I2C error flag
 
   -- I2C Master component declaration
   COMPONENT i2c_master IS
@@ -56,7 +55,7 @@ ARCHITECTURE behavior OF temp_sensor IS
 
 BEGIN
   -- Instantiate the I2C Master
-  i2c_master_0: i2c_master
+  i2c_master_1: i2c_master
     GENERIC MAP(input_clk => sys_clk_freq, bus_clk => 400_000)
     PORT MAP(
       clk => clk, rst_n => rst_n, ena => i2cena, addr => i2caddr,
@@ -73,8 +72,7 @@ BEGIN
       counter := 0;
       i2cena  <= '0';
       busycnt := 0;
-      --temp <= (OTHERS => '0');            small change with Alvin's
-    temp <= 0;                            --small change with Alvin's
+      temp <= 0;
       state <= startstate;
     ELSIF (clk'EVENT AND clk = '1') THEN
       -- State machine logic
