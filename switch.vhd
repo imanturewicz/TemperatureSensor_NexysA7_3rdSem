@@ -13,7 +13,7 @@ end switch;
 
 architecture switch_arch of switch is
 begin
-    CzyFarenhait: process(Clk_in)
+    IfFarenhait: process(Clk_in)
     begin
         if rising_edge(Clk_in) then
             if SW_in = '0' then
@@ -22,5 +22,8 @@ begin
                 F_out <= '1';
             end if;
         end if;
-    end process CzyFarenhait;
+    end process IfFarenhait;
 end switch_arch;
+--The output of the Switch entity depends on the switch’s position.
+--It is either 0 or 1: when it is 0, the temperature displayed will be in degrees of Celsius,
+--when it is 1, the temperature displayed will be in degrees of Fahrenheit.
