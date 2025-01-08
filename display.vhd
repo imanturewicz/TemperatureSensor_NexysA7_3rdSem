@@ -30,14 +30,14 @@ begin
     begin
         if Rst_in = '1' then
             DIGITS_out <= "11111111";
-        elsif rising_edge(Clk_in) then
+        elsif rising_edge(Clk_in) then        --circulating between 5 digits of the display (first and last for)
             if temp = 5 then
                 DIGITS_out <= "01111111";
                 if F_in = '0' then CA_out <= '0'; CB_out <= '1'; CC_out <= '1'; CD_out <= '0'; CE_out <= '0'; CF_out <= '0'; CG_out <= '1'; DP_out <= '1';
                 else CA_out <= '0'; CB_out <= '1'; CC_out <= '1'; CD_out <= '1'; CE_out <= '0'; CF_out <= '0'; CG_out <= '0'; DP_out <= '1';
                 end if;
             elsif temp = 4 then
-                DIGITS_out <= "11110111";
+                DIGITS_out <= "11110111";        --displaying the given digit
                 if th_in = 9 then CA_out <= '0'; CB_out <= '0'; CC_out <= '0'; CD_out <= '0'; CE_out <= '1'; CF_out <= '0'; CG_out <= '0'; DP_out <= '1';
                 elsif th_in = 8 then CA_out <= '0'; CB_out <= '0'; CC_out <= '0'; CD_out <= '0'; CE_out <= '0'; CF_out <= '0'; CG_out <= '0'; DP_out <= '1';
                 elsif th_in = 7 then CA_out <= '0'; CB_out <= '0'; CC_out <= '0'; CD_out <= '1'; CE_out <= '1'; CF_out <= '1'; CG_out <= '1'; DP_out <= '1';
@@ -95,3 +95,9 @@ begin
         end if;
     end process Display;
 end display_arch;
+--The Display entity takes the decimal values of each digit from the Display Controller and displays according segments on the display.
+--Each clock cycle this entity outputs only one digit and then moves to the next one in the following cycle,
+--but since the clock frequency is high the output values appear to be displayed simultaneously and the results are clear.
+--The segments lit on the first digit depend on the switch, it is either ‘C’ or ‘F’ exhibiting which scale is being used.
+--Then, the 4 digits of the right side of the display are occupied by the reading of the temperature obtained from the Display Controller entity.
+--The second digit also has a point segment lit, just to resemble dividing by one hundred (inverting the previous multiplication that occurred in the Sensor Controller).
