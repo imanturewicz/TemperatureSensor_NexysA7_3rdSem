@@ -5,11 +5,11 @@ use IEEE.numeric_std.all;
 
 entity Temperature_Sensor_tl is
     Port (
-        CLK100MHZ :  in  STD_LOGIC;
-        RST :  in  STD_LOGIC;
-        SW: in std_logic;
-        DIGITS: out std_logic_vector (7 downto 0);
-        DP: out std_logic;
+        CLK100MHZ :  in  STD_LOGIC;        --System Clock
+        RST :  in  STD_LOGIC;        --Reset button
+        SW: in std_logic;        --Switch no 15
+        DIGITS: out std_logic_vector (7 downto 0);        --8 digit 7segment display
+        DP: out std_logic;        --Cathodes of the 7 segment display
         CA: out std_logic;
         CB: out std_logic;
         CC: out std_logic;
@@ -17,16 +17,16 @@ entity Temperature_Sensor_tl is
         CE: out std_logic;
         CF: out std_logic;
         CG: out std_logic;
-        SDA   : inout STD_LOGIC;
+        SDA   : inout STD_LOGIC;        --Temperature Sensor I2C protocol instruments
         SCL   : inout STD_LOGIC
     );
 end Temperature_Sensor_tl;
 
 architecture TempSensTL_arch of Temperature_Sensor_tl is
     signal CLK: std_logic;
-    signal F: std_logic;
-    signal temperatura: integer range 0 to 10000 := 3660;
-    signal th: integer range 0 to 10;
+    signal F: std_logic;        --C or F
+    signal temperatura: integer range 0 to 10000 := 3660;        --temperature in degrees Celcius multiplied by 100
+    signal th: integer range 0 to 10;        --digits to display (4th, 3rd, 2nd, 1st)
     signal rd: integer range 0 to 9;
     signal nd: integer range 0 to 9;
     signal st: integer range 0 to 9;
